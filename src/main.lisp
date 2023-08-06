@@ -11,9 +11,7 @@
 
 (defun hsv-helper (hsv-lst)
   (destructuring-bind (h s v) hsv-lst
-    (list :h (car hsv-lst)
-          :s (cadr hsv-lst)
-          :v (caddr hsv-lst))))
+    `(:h ,h :s ,s :v ,v)))
 
 ;; draw settings
 (defparameter *width* 600)
@@ -86,7 +84,7 @@
 (defun main ()
   (let ((screen-width *width*)
         (screen-height *height*))
-    (cl-raylib:with-window (screen-width screen-height "basic window")
+    (cl-raylib:with-window (screen-width screen-height "Mandelbrot")
       (cl-raylib:set-target-fps 60)
       (loop
             until (cl-raylib:window-should-close)
