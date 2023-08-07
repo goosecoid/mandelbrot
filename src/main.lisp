@@ -1,6 +1,6 @@
 (require :cl-raylib)
 (defpackage mandelbrot
-  (:use :cl))
+  (:use :cl :cl-raylib))
 (in-package :mandelbrot)
 
 ;; mandelbrot settings
@@ -69,20 +69,20 @@
 (defun main ()
   (let ((screen-width *width*)
         (screen-height *height*))
-    (cl-raylib:with-window (screen-width screen-height "Mandelbrot")
-      (cl-raylib:set-target-fps 60)
+    (with-window (screen-width screen-height "Mandelbrot")
+      (set-target-fps 60)
       (loop
-            until (cl-raylib:window-should-close)
-            do (cl-raylib:with-drawing
-                 (cl-raylib:clear-background cl-raylib:+white+)
-                 (mapcar
-                  (lambda (data)
-                    (destructuring-bind (color x y) data
-                      (cl-raylib:draw-circle x
-                                             y
-                                             1.0
-                                             (destructuring-bind (h s v) color
-                                               (cl-raylib:color-from-hsv h s v)))))
-                  (plot-mandelbrot)))))))
+        until (window-should-close)
+        do (with-drawing
+             (clear-background +white+)
+             (mapcar
+              (lambda (data)
+                (destructuring-bind (color x y) data
+                  (draw-circle x
+                               y
+                               1.0
+                               (destructuring-bind (h s v) color
+                                 (color-from-hsv h s v)))))
+              (plot-mandelbrot)))))))
 
-(main)
+;; (main)
