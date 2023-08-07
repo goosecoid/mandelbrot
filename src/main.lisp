@@ -9,17 +9,13 @@
 (defparameter *max-iterations* 60)
 (defparameter *escape-radius* 2)
 
-(defun hsv-helper (hsv-lst)
-  (destructuring-bind (h s v) hsv-lst
-    `(:h ,h :s ,s :v ,v)))
-
 ;; draw settings
 (defparameter *width* 600)
 (defparameter *height* 600)
 (defparameter *pixel-width* (/ (- (cdr *x-bounds*) (car *x-bounds*)) *width*))
 (defparameter *pixel-height* (/ (- (cdr *y-bounds*) (car *y-bounds*)) *height*))
-(defparameter *bittersweet-red* (hsv-helper '(5.0 0.603 0.929)))
-(defparameter *atomic-tangerine* (hsv-helper '(20.0 0.471 1.0)))
+(defparameter *bittersweet-red* '(5.0 0.603 0.929))
+(defparameter *atomic-tangerine* '(20.0 0.471 1.0))
 
 ;; Since h value in hsv represents an angle
 ;; we need to know if it's shorter to go ccw
@@ -40,24 +36,13 @@
 
 ;; return an extrapolated color (step) between dcolor
 ;; and lcolor giving a range (steps)
-(defun lerp-color (dcolor lcolor step steps)
-  (let* ((lh (getf lcolor :h))
-         (ls (getf lcolor :s))
-         (lv (getf lcolor :v))
-         (dh (getf dcolor :h))
-         (ds (getf dcolor :s))
-         (dv (getf dcolor :v))
-         (pct (/ step steps))
+(defun lerp-color (lcolor dcolor step steps)
+  (destructuring-bind (lh ls lv dh ds dv) (append lcolor dcolor)
+    (let* ((pct (/ step steps))
          (h (lerp-hue lh dh pct))
          (s (+ (* (- 1 pct) ls) (* pct ds)))
          (v (+ (* (- 1 pct) lv) (* pct dv))))
-    `(:h ,h :s ,s :v ,v)))
-
-(defun get-color-from-hsv-plist (color-plist)
-  (let ((h (getf color-plist :h))
-        (s (getf color-plist :s))
-        (v (getf color-plist :v)))
-    (cl-raylib:color-from-hsv h s v)))
+      `(,h ,s ,v))))
 
 ;; calculate how many iterations it takes for z to escape
 (defun calculate-iterations (cx cy)
@@ -96,7 +81,8 @@
                       (cl-raylib:draw-circle x
                                              y
                                              1.0
-                                             (get-color-from-hsv-plist color))))
+                                             (destructuring-bind (h s v) color
+                                               (cl-raylib:color-from-hsv h s v)))))
                   (plot-mandelbrot)))))))
 
-;; (main)
+(main)
