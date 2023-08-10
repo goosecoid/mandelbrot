@@ -1,5 +1,0 @@
-* Mandelbrot 
-
-** Usage
-
-** Installation

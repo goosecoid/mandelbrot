@@ -3,6 +3,8 @@
   (:use :cl :cl-raylib))
 (in-package :mandelbrot)
 
+;; (ql:quickload :cl-raylib)
+
 ;; mandelbrot settings
 (defparameter *x-bounds* (cons -2.00 0.47))
 (defparameter *y-bounds* (cons -1.12 1.12))
